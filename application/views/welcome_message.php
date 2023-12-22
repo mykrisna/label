@@ -16,12 +16,13 @@
 <body class="sb-nav-fixed">
 	<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
 		<!-- Navbar Brand-->
-		<a class="navbar-brand ps-3" href="index.html">TTA</a>
+		<a class="navbar-brand ps-3" href="<?= base_url() ?>">TTA</a>
 		<!-- Sidebar Toggle-->
 		<button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
 
 		<ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
 			<li class="nav-item dropdown">
+
 			</li>
 		</ul>
 	</nav>
@@ -51,12 +52,20 @@
 					<div class="card mb-4">
 						<div class="card-body">
 
+							<div class="input-group">
+								<form id="f_upload_xls" method="POST" action="<?php echo base_url('welcome/do_upload_kirim') ?>" enctype="multipart/form-data">
+									<input type="file" class="form-control" name="userfile" id="userfile" accept=".xlsx" aria-label="Upload" required>
+									<button class="btn btn-primary" type="submit" id="inputGroupFileAddon04">Upload</button>
+								</form>
+							</div>
+
 						</div>
 					</div>
 					<div class="card mb-4">
 						<div class="card-header">
 							<i class="fas fa-table me-1"></i>
 							Shipment List
+							<a href="<?= base_url('welcome/cetak'); ?>" style="float:right;" target="_blank" type="button" class="btn btn-warning btn-sm"><i class="fas fa-print"></i>&nbsp;Cetak</a>
 						</div>
 						<div class="card-body">
 							<table id="datatablesSimple">
@@ -73,7 +82,6 @@
 										<th>Color</th>
 										<th>Size</th>
 										<th>Barcode</th>
-										<th>Option</th>
 									</tr>
 								</thead>
 
@@ -93,7 +101,7 @@
 										echo "<td>" . $dt['color'] . "</td>";
 										echo "<td>" . $dt['size'] . "</td>";
 										echo "<td>" . $dt['barcode'] . "</td>";
-										echo "<td><button class='btn btn-primary btn-sm'>Cetak</button></td>";
+
 										echo "</tr>";
 										$i++;
 									}
@@ -122,3 +130,36 @@
 </body>
 
 </html>
+
+<script>
+	$('#f_upload_xls').on('submit', function(e) {
+		e.preventDefault();
+		//document.getElementById('upload_btn').style.display = 'none';
+		//document.getElementById('loading_btn').style.display = '';
+
+		$.ajax({
+			url: "<?= base_url('welcome/do_upload_kirim') ?>",
+			type: "POST",
+			data: new FormData(this),
+			contentType: false,
+			cache: false,
+			processData: false,
+			success: function(data) {
+				if (data == 0) {
+					pesan_gagal();
+					//$('#f_upload').modal('hide');
+					//document.getElementById('upload_btn').style.display = '';
+					//document.getElementById('loading_btn').style.display = 'none';
+					document.getElementById('userfile').value = '';
+				} else {
+					tampildata();
+					//$('#f_upload').modal('hide');
+					//pesan_simpan();
+					//document.getElementById('upload_btn').style.display = '';
+					//document.getElementById('loading_btn').style.display = 'none';
+					document.getElementById('userfile').value = '';
+				}
+			}
+		});
+	});
+</script>
