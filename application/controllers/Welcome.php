@@ -105,40 +105,44 @@ class Welcome extends CI_Controller
 		$pdf->Output();
 	}
 
-	public function do_upload_kirim()
+	public function delete_all()
 	{
-		$this->load->library('Excel');
-		$target = basename($_FILES['userfile']['name']);
-		move_uploaded_file($_FILES['userfile']['tmp_name'], $target);
+		$this->load->model('M_sql');
+		$this->M_sql->hapus();
+	}
 
-		// beri permisi agar file xls dapat di baca
-		chmod($_FILES['userfile']['name'], 0777);
+	public function simpan()
+	{
+		$this->load->model('M_sql');
+		$no_ctn = $this->input->post('no_ctn');
+		$buyer   = $this->input->post('buyer');
+		$alamat1  = $this->input->post('alamat1');
+		$alamat2  = $this->input->post('alamat2');
+		$alamat3  = $this->input->post('alamat3');
+		$deskripsi  = $this->input->post('deskripsi');
+		$po  = $this->input->post('po');
+		$qty  = $this->input->post('qty');
+		$style  = $this->input->post('style');
+		$sku  = $this->input->post('sku');
+		$color  = $this->input->post('color');
+		$size  = $this->input->post('size');
+		$barcode  = $this->input->post('barcode');
 
-		// mengambil isi file xls
-		$data = new Spreadsheet_Excel_Reader($_FILES['userfile']['name'], false);
-		// menghitung jumlah baris data yang ada
-		$jumlah_baris = $data->rowcount($sheet_index = 0);
-
-		// jumlah default data yang berhasil di import
-		$berhasil = 0;
-		for ($i = 2; $i <= $jumlah_baris; $i++) {
-
-			// menangkap data dan memasukkan ke variabel sesuai dengan kolumnya masing-masing
-			$nama     = $data->val($i, 1);
-			$alamat   = $data->val($i, 2);
-			$telepon  = $data->val($i, 3);
-
-			if ($nama != "" && $alamat != "" && $telepon != "") {
-				// input data ke database (table data_pegawai)
-				//mysqli_query($koneksi, "INSERT into data_pegawai values('','$nama','$alamat','$telepon')");
-				$berhasil++;
-			}
-		}
-
-		// hapus kembali file .xls yang di upload tadi
-		unlink($_FILES['filepegawai']['name']);
-
-		// alihkan halaman ke index.php
-		header("location:index.php?berhasil=$berhasil");
+		$data = array(
+			'no_ctn' => $no_ctn,
+			'ship_to' => $buyer,
+			'ship2' => $deskripsi,
+			'po' => $po,
+			'qty' => $qty,
+			'style' => $style,
+			'sku' => $sku,
+			'color' => $color,
+			'size' => $size,
+			'barcode' => $barcode,
+			'alamat1' => $alamat1,
+			'alamat2' => $alamat2,
+			'alamat3' => $alamat3
+		);
+		$this->db->insert('tb_barcode', $data);
 	}
 }

@@ -53,8 +53,8 @@
 						<div class="card-body">
 
 							<div class="input-group">
-								<form id="f_upload_xls" method="POST" action="<?php echo base_url('welcome/do_upload_kirim') ?>" enctype="multipart/form-data">
-									<input type="file" class="form-control" name="userfile" id="userfile" accept=".xlsx" aria-label="Upload" required>
+								<form id="f_upload_xls" method="POST" action="http://10.100.200.1:8787/label_barcode/upload_barcode.php" enctype="multipart/form-data">
+									<input type="file" class="form-control" name="userfile" id="userfile" accept=".xls" aria-label="Upload" required>
 									<button class="btn btn-primary" type="submit" id="inputGroupFileAddon04">Upload</button>
 								</form>
 							</div>
@@ -72,7 +72,6 @@
 								<thead>
 									<tr>
 										<th>#</th>
-										<th>Date</th>
 										<th>Ship To</th>
 										<th></th>
 										<th>PO</th>
@@ -91,7 +90,6 @@
 									foreach ($data as $dt) {
 										echo "<tr>";
 										echo "<td>" . $i . "</td>";
-										echo "<td>" . $dt['shipdate'] . "</td>";
 										echo "<td>" . $dt['ship_to'] . "</td>";
 										echo "<td>" . $dt['ship2'] . "</td>";
 										echo "<td>" . $dt['po'] . "</td>";
@@ -134,11 +132,8 @@
 <script>
 	$('#f_upload_xls').on('submit', function(e) {
 		e.preventDefault();
-		//document.getElementById('upload_btn').style.display = 'none';
-		//document.getElementById('loading_btn').style.display = '';
-
 		$.ajax({
-			url: "<?= base_url('welcome/do_upload_kirim') ?>",
+			url: "http://10.100.200.1:8787/label_barcode/upload_barcode.php",
 			type: "POST",
 			data: new FormData(this),
 			contentType: false,
@@ -147,16 +142,9 @@
 			success: function(data) {
 				if (data == 0) {
 					pesan_gagal();
-					//$('#f_upload').modal('hide');
-					//document.getElementById('upload_btn').style.display = '';
-					//document.getElementById('loading_btn').style.display = 'none';
 					document.getElementById('userfile').value = '';
 				} else {
 					tampildata();
-					//$('#f_upload').modal('hide');
-					//pesan_simpan();
-					//document.getElementById('upload_btn').style.display = '';
-					//document.getElementById('loading_btn').style.display = 'none';
 					document.getElementById('userfile').value = '';
 				}
 			}
