@@ -7,7 +7,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<meta name="description" content="" />
 	<meta name="author" content="" />
-	<title>TTA | Shipment</title>
+	<title>TTA | Label Shipment</title>
 	<link href="<?= base_url(); ?>vendor/css/style.min.css" rel="stylesheet" />
 	<link href="<?= base_url(); ?>vendor/css/styles.css" rel="stylesheet" />
 	<link href="<?= base_url(); ?>vendor/css/sweetalert2.min.css" rel="stylesheet" />
@@ -16,7 +16,7 @@
 </head>
 
 <body class="sb-nav-fixed">
-	<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+	<nav class="sb-topnav navbar navbar-expand navbar-dark bg-primary">
 		<!-- Navbar Brand-->
 		<a class="navbar-brand ps-3" href="<?= base_url() ?>">TTA</a>
 		<!-- Sidebar Toggle-->
