@@ -10,7 +10,9 @@
 	<title>TTA | Shipment</title>
 	<link href="<?= base_url(); ?>vendor/css/style.min.css" rel="stylesheet" />
 	<link href="<?= base_url(); ?>vendor/css/styles.css" rel="stylesheet" />
+	<link href="<?= base_url(); ?>vendor/css/sweetalert2.min.css" rel="stylesheet" />
 	<script src="<?= base_url(); ?>vendor/js/all.js" crossorigin="anonymous"></script>
+	<script src="<?= base_url(); ?>vendor/js/jquery-3.5.1.js"></script>
 </head>
 
 <body class="sb-nav-fixed">
@@ -33,8 +35,8 @@
 					<div class="nav">
 						<div class="sb-sidenav-menu-heading">Menu</div>
 						<a class="nav-link" href="<?= base_url() ?>">
-							<div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-							Shipment
+							<div class="sb-nav-link-icon"><i class="fas fa-tag"></i></div>
+							Label Shipment
 						</a>
 					</div>
 				</div>
@@ -47,65 +49,30 @@
 		<div id="layoutSidenav_content">
 			<main>
 				<div class="container-fluid px-4">
-					<h1 class="mt-4">Shipment</h1>
+					<h1 class="mt-4"><i class="fas fa-tag"></i>&nbsp;Label Shipment Generator</h1>
 
 					<div class="card mb-4">
 						<div class="card-body">
-
-							<div class="input-group">
-								<form id="f_upload_xls" method="POST" action="http://10.100.200.1:8787/label_barcode/upload_barcode.php" enctype="multipart/form-data">
+							<form id="f_upload_xls" method="POST" action="http://10.100.200.1:8787/label_barcode/upload_barcode.php" enctype="multipart/form-data">
+								<div class="input-group">
 									<input type="file" class="form-control" name="userfile" id="userfile" accept=".xls" aria-label="Upload" required>
-									<button class="btn btn-primary" type="submit" id="inputGroupFileAddon04">Upload</button>
-								</form>
-							</div>
-
+									<button class="btn btn-success" type="submit" id="inputGroupFileAddon04"><i class="fas fa-file-import"></i>&nbsp;Import xls</button>
+								</div>
+							</form>
 						</div>
 					</div>
 					<div class="card mb-4">
 						<div class="card-header">
 							<i class="fas fa-table me-1"></i>
-							Shipment List
-							<a href="<?= base_url('welcome/cetak'); ?>" style="float:right;" target="_blank" type="button" class="btn btn-warning btn-sm"><i class="fas fa-print"></i>&nbsp;Cetak</a>
+							Label List
+							<button style="float:right;margin: 1px;" type="button" onclick="tampildata()" class="btn btn-primary btn-sm"><i class="fas fa-sync-alt"></i>&nbsp;Refresh Grid</button>
+							<button style="float:right;margin: 1px;" type="button" onclick="pesan()" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i>&nbsp;Kosongkan data</button>
+							<label>&nbsp;</label>
+							<a href="<?= base_url('welcome/cetak'); ?>" style="float:right;margin: 1px;" target="_blank" type="button" class="btn btn-warning btn-sm"><i class="fas fa-print"></i>&nbsp;Cetak</a>
+
 						</div>
 						<div class="card-body">
-							<table id="datatablesSimple">
-								<thead>
-									<tr>
-										<th>#</th>
-										<th>Ship To</th>
-										<th></th>
-										<th>PO</th>
-										<th>Qty</th>
-										<th>Style</th>
-										<th>SKU</th>
-										<th>Color</th>
-										<th>Size</th>
-										<th>Barcode</th>
-									</tr>
-								</thead>
-
-								<tbody>
-									<?php
-									$i = 1;
-									foreach ($data as $dt) {
-										echo "<tr>";
-										echo "<td>" . $i . "</td>";
-										echo "<td>" . $dt['ship_to'] . "</td>";
-										echo "<td>" . $dt['ship2'] . "</td>";
-										echo "<td>" . $dt['po'] . "</td>";
-										echo "<td>" . $dt['qty'] . "</td>";
-										echo "<td>" . $dt['style'] . "</td>";
-										echo "<td>" . $dt['sku'] . "</td>";
-										echo "<td>" . $dt['color'] . "</td>";
-										echo "<td>" . $dt['size'] . "</td>";
-										echo "<td>" . $dt['barcode'] . "</td>";
-
-										echo "</tr>";
-										$i++;
-									}
-									?>
-								</tbody>
-							</table>
+							<div id="tbdata"></div>
 						</div>
 					</div>
 				</div>
@@ -121,15 +88,48 @@
 			</footer>
 		</div>
 	</div>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+	<script src="<?= base_url(); ?>vendor/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 	<script src="<?= base_url(); ?>vendor/js/scripts.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+	<script src="<?= base_url(); ?>vendor/js/simple-datatables.min.js" crossorigin="anonymous"></script>
 	<script src="<?= base_url(); ?>vendor/js/datatables-simple-demo.js"></script>
+	<script src="<?= base_url(); ?>vendor/js/sweetalert2.min.js"></script>
 </body>
 
 </html>
 
-<script>
+<script type="text/javascript">
+	$.get("<?= base_url('Welcome/tb_data') ?>", function(data, status) {
+		$("#tbdata").html(data);
+	});
+
+	function tampildata() {
+		$.get("<?= base_url('Welcome/tb_data') ?>", function(data, status) {
+			$("#tbdata").html(data);
+		});
+	}
+
+	function pesan() {
+		Swal.fire({
+			title: "Semua data akan dihapus",
+			text: "Lanjutkan ?",
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			cancelButtonText: "Jangan donk",
+			confirmButtonText: "Ya, Hapus Semua"
+		}).then((result) => {
+			if (result.isConfirmed) {
+				// begin
+				$.get("<?= base_url('Welcome/delete_all') ?>", function(data, status) {
+					//$("#tbspk").html(data);
+					tampildata();
+				});
+				//end
+			}
+		});
+	}
+
 	$('#f_upload_xls').on('submit', function(e) {
 		e.preventDefault();
 		$.ajax({
@@ -140,13 +140,8 @@
 			cache: false,
 			processData: false,
 			success: function(data) {
-				if (data == 0) {
-					pesan_gagal();
-					document.getElementById('userfile').value = '';
-				} else {
-					tampildata();
-					document.getElementById('userfile').value = '';
-				}
+				location.reload();
+				//document.getElementById('userfile').value = '';
 			}
 		});
 	});

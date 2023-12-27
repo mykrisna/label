@@ -145,4 +145,11 @@ class Welcome extends CI_Controller
 		);
 		$this->db->insert('tb_barcode', $data);
 	}
+
+	public function tb_data()
+	{
+		$this->load->model('M_sql');
+		$data = $this->M_sql->view_barcode();
+		$this->load->view('tb_data', ['data' => $data]);
+	}
 }
