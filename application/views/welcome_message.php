@@ -140,8 +140,8 @@
 			cache: false,
 			processData: false,
 			success: function(data) {
-				location.reload();
-				//document.getElementById('userfile').value = '';
+				tampildata();
+				document.getElementById('userfile').value = '';
 			}
 		});
 	});

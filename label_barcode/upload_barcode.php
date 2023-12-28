@@ -1,26 +1,23 @@
 
 
 <?php
-
-//include 'koneksi.php';
-
 include "excel_reader2.php";
-?>
-
-<?php
-
 $target = basename($_FILES['userfile']['name']);
 move_uploaded_file($_FILES['userfile']['tmp_name'], $target);
-
-
 chmod($_FILES['userfile']['name'], 0777);
-
-
 $data = new Spreadsheet_Excel_Reader($_FILES['userfile']['name'], false);
-
 $jumlah_baris = $data->rowcount($sheet_index = 0);
-
 $url = 'http://10.100.200.2/label/welcome/simpan';
+$url2 = 'http://10.100.200.2/label/welcome/delete_all';
+$options = array(
+	'http' => array(
+		'header'  => "Content-type: application/x-www-form-urlencoded",
+		'method'  => 'POST',
+		'content' => http_build_query()
+	)
+);
+$context  = stream_context_create($options);
+$resp = file_get_contents($url2, false, $context);
 $berhasil = 0;
 for ($i = 2; $i <= $jumlah_baris; $i++) {
 	$no_ctn     = $data->val($i, 1);
@@ -36,13 +33,9 @@ for ($i = 2; $i <= $jumlah_baris; $i++) {
 	$color  = $data->val($i, 11);
 	$size  = $data->val($i, 12);
 	$barcode  = $data->val($i, 13);
-	/*
-	mysqli_query($koneksi, "INSERT into tb_barcode(no_ctn,ship_to,ship2,po,qty,style,sku,color,size,barcode,alamat1,alamat2,alamat3) 
-	values('" . $no_ctn . "','" . $buyer . "','" . $deskripsi . "','" . $po . "','" . $qty . "','" . $style . "','" . $sku . "','" . $color . "','" . $size . "','" . $barcode . "','" . $alamat1 . "','" . $alamat2 . "','" . $alamat3 . "')");
-	$berhasil++;
-	*/
 
-	$post_data = array(
+
+	$kirimdata = array(
 		'no_ctn' => $no_ctn,
 		'buyer' => $buyer,
 		'alamat1' => $alamat1,
@@ -58,20 +51,24 @@ for ($i = 2; $i <= $jumlah_baris; $i++) {
 		'barcode' => $barcode,
 	);
 
-	$ch = curl_init($url);
-	curl_setopt($ch, CURLOPT_POST, 1);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_data));
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	$response = curl_exec($ch);
-	if (curl_errno($ch)) {
-		echo 'Error: ' . curl_error($ch);
-	}
-	$responses[] = $response;
-	curl_close($ch);
-	foreach ($responses as $response) {
-		echo $response;
-	}
+
+	$options = array(
+		'http' => array(
+			'header'  => "Content-type: application/x-www-form-urlencoded",
+			'method'  => 'POST',
+			'content' => http_build_query($kirimdata)
+		)
+	);
+	$context  = stream_context_create($options);
+	//$resp2 = file_get_contents($url2, false, $context);
+	$resp = file_get_contents($url, false, $context);
+	echo $resp;
 }
 
+
+
+
+
 unlink($_FILES['userfile']['name']);
+header("location:http://10.100.200.2/label/");
 ?>

@@ -113,6 +113,7 @@ class Welcome extends CI_Controller
 
 	public function simpan()
 	{
+		header("Access-Control-Allow-Origin: *");
 		$this->load->model('M_sql');
 		$no_ctn = $this->input->post('no_ctn');
 		$buyer   = $this->input->post('buyer');
