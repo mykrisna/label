@@ -1,6 +1,7 @@
 
 
 <?php
+header("Access-Control-Allow-Origin: *");
 include "excel_reader2.php";
 $target = basename($_FILES['userfile']['name']);
 move_uploaded_file($_FILES['userfile']['tmp_name'], $target);
